@@ -19,5 +19,5 @@ pub fn main() !void {
 
 fn getUser(req: *httpz.Request, res: *httpz.Response) !void {
     res.status = 200;
-    try res.json(.{.id = req.param("id").?, .name = "Teg"}, .{});
+    try res.json(.{.id = req.param("id").?, .name = "Moena"}, .{});
 }
