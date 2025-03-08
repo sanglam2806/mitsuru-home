@@ -6,13 +6,15 @@ pub fn main() !void {
     const allocator = gpa.allocator();
 
     var server = try httpz.Server(void).init(allocator, .{.port = 5882}, {});
+
+    
     defer {
         server.stop();
         server.deinit();
     }
 
     var router = server.router(.{});
-    router.get("/api/user/:id", getUser, .{});
+    router.get("/:id", getUser, .{});
 
     try server.listen(); 
 }

@@ -16,11 +16,14 @@ pub fn build(b: *std.Build) void {
 
     const exe = b.addExecutable(.{
         .name = "home-server",
-        .root_source_file = b.path("src/main.zig"),
+        .root_source_file = b.path("src/mongoConnect.zig"),
         .target = target,
         .optimize = optimize,
     });
 
+    // add relative Path file until file want to include
+    exe.addIncludePath(b.path(".include/libmongoc-1.0/"));
+    exe.addIncludePath(b.path(".include/libbson-1.0/"));
 
     const httpz_module = b.dependency("httpz", .{.target = target, .optimize = optimize}).module("httpz");
     exe.root_module.addImport("httpz", httpz_module);
