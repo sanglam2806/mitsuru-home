@@ -43,6 +43,24 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return users, nil
 }
 
+func(r *queryResolver) GetAllRooms(ctx context.Context) ([]*model.Room, error) {
+	logger := logger.NewLogger(zerolog.InfoLevel)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	rooms, err := r.room_service.GetAllRooms(ctx, logger);
+	if err!= nil {
+		logger.Error().Msg("internal error");
+	}
+
+	var rs []*model.Room
+	for _,room := range *rooms {
+		rs = append(rs, &room)
+	}
+
+	return rs, nil
+}
+
 // Role is the resolver for the Role field.
 func (r *userResolver) Role(ctx context.Context, obj *model.User) (string, error) {
 	panic(fmt.Errorf("not implemented: Role - Role"))

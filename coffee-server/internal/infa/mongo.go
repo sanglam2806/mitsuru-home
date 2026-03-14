@@ -11,3 +11,5 @@ func MongoConnect(mongoConf *domain.MongoConfig) (*mongo.Client, error) {
 	return mongo.Connect(opts.ApplyURI(mongoConf.MongoUrl));
 
 }
+
+

@@ -19,9 +19,20 @@ type User {
   Create_at: String!
 }
 
+type Room {
+  ID: ID!
+  RoomName: String!
+  Type: String!
+  price: Int!
+  maxGuests: Int!
+  amentities: String!
+  status: Int!
+}
+
 type Query {
   todos: [Todo!]!
   users: [User!]!
+  rooms: [Room!]!
 }
 
 input NewTodo {

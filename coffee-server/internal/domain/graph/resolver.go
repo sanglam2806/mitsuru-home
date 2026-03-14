@@ -9,10 +9,16 @@ import "github.com/sanglam2806/mitsuru-home/internal/domain/services"
 
 type Resolver struct{
 	service *services.UserService
+	room_service *services.RoomService
 }
 
 func NewResolver(sv *services.UserService) *Resolver{
 	return &Resolver{
 		service: sv,
 	}
+}
+
+func NewRoomResolver( sv *services.RoomService) *Resolver {
+	return  &Resolver{room_service: sv}
+	
 }

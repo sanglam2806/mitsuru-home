@@ -26,6 +26,7 @@ func main() {
 	if err != nil {
 		log.Err(err).Msg("Cannot connect to MongoDB")
 	}
+	database := client.Database(mongoConf.MongoDBName)
 
 	repo := repositories.NewUserRepository(client);
 	service := services.NewUserService(repo);
@@ -48,6 +49,22 @@ func main() {
 
 	handler.GetUsers(log)
 	
+	room_repo := repositories.NewRoomRepository(database)
+	room_service := services.NewRoomService(room_repo)
+	room_handler := handlers.NewRoomHandler(room_service)
+
+	room := model.Room{
+		RoomName:   "Moena",
+		Type:       0,
+		Price:      0,
+		MaxGuests:  0,
+		Amentities: "Na-Chan",
+		Status:     0,
+	}
+
+	err = room_handler.InsertNewRoom(ctx, log, &room)
+
+	room_handler.GetAllRooms(log)
 
 	//
 	// http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {

@@ -19,6 +19,7 @@ type Config struct{
 
 type MongoConfig struct {
 	MongoUrl string
+	MongoDBName string
 }
 
 func LoadMongoConfig() *MongoConfig{
@@ -29,6 +30,7 @@ func LoadMongoConfig() *MongoConfig{
 
 	return &MongoConfig{
 		MongoUrl : LoadEnvKey("MONGO_URI"),
+		MongoDBName: LoadEnvKey("MONGO_DATABASE_NAME"),
 	}
 }
 
