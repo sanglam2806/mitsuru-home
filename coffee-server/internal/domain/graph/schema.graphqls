@@ -11,8 +11,8 @@ type Todo {
 
 type User {
   id: ID!
-  UserID: String!
-  UserName: String!
+  Userid: String!
+  Username: String!
   Email: String!
   Phone: String!
   Role: String!

@@ -1,4 +1,4 @@
-package entity
+package model
 
 import (
 	"context"
@@ -7,7 +7,9 @@ import (
 	"github.com/rs/zerolog"
 )
 
+
 type User struct {
+	ID       string `json:"id"`
 	Userid    string    `json:"userid,omitempty" bson:"userid"`
 	Username  string    `json:"username,omitempty" bson:"username"`
 	Email     string    `json:"email,omitempty" bson:"email"`

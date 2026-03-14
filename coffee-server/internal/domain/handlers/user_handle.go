@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
-	"github.com/sanglam2806/mitsuru-home/internal/domain/entity"
+	"github.com/sanglam2806/mitsuru-home/internal/domain/graph/model"
 	"github.com/sanglam2806/mitsuru-home/internal/domain/services"
 )
 
@@ -33,6 +33,6 @@ func (h *UserHandler) GetUsers(logger *zerolog.Logger) {
 	// json.NewEncoder(w).Encode(user);
 }
 
-func (h *UserHandler) InsertUser(userAccount *entity.User, ctx context.Context, logger *zerolog.Logger) error{
+func (h *UserHandler) InsertUser(userAccount *model.User, ctx context.Context, logger *zerolog.Logger) error{
 	return h.service.InsertUser(ctx, logger, userAccount) 
 }

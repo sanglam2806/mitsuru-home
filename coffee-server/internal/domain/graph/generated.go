@@ -30,6 +30,7 @@ type Config = graphql.Config[ResolverRoot, DirectiveRoot, ComplexityRoot]
 type ResolverRoot interface {
 	Mutation() MutationResolver
 	Query() QueryResolver
+	User() UserResolver
 }
 
 type DirectiveRoot struct {
@@ -58,8 +59,8 @@ type ComplexityRoot struct {
 		ID       func(childComplexity int) int
 		Phone    func(childComplexity int) int
 		Role     func(childComplexity int) int
-		UserID   func(childComplexity int) int
-		UserName func(childComplexity int) int
+		Userid   func(childComplexity int) int
+		Username func(childComplexity int) int
 	}
 }
 
@@ -69,6 +70,10 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Todos(ctx context.Context) ([]*model.Todo, error)
 	Users(ctx context.Context) ([]*model.User, error)
+}
+type UserResolver interface {
+	Role(ctx context.Context, obj *model.User) (string, error)
+	CreateAt(ctx context.Context, obj *model.User) (string, error)
 }
 
 type executableSchema graphql.ExecutableSchemaState[ResolverRoot, DirectiveRoot, ComplexityRoot]
@@ -165,18 +170,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.User.Role(childComplexity), true
-	case "User.UserID":
-		if e.ComplexityRoot.User.UserID == nil {
+	case "User.Userid":
+		if e.ComplexityRoot.User.Userid == nil {
 			break
 		}
 
-		return e.ComplexityRoot.User.UserID(childComplexity), true
-	case "User.UserName":
-		if e.ComplexityRoot.User.UserName == nil {
+		return e.ComplexityRoot.User.Userid(childComplexity), true
+	case "User.Username":
+		if e.ComplexityRoot.User.Username == nil {
 			break
 		}
 
-		return e.ComplexityRoot.User.UserName(childComplexity), true
+		return e.ComplexityRoot.User.Username(childComplexity), true
 
 	}
 	return 0, false
@@ -471,10 +476,10 @@ func (ec *executionContext) fieldContext_Query_users(_ context.Context, field gr
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_User_id(ctx, field)
-			case "UserID":
-				return ec.fieldContext_User_UserID(ctx, field)
-			case "UserName":
-				return ec.fieldContext_User_UserName(ctx, field)
+			case "Userid":
+				return ec.fieldContext_User_Userid(ctx, field)
+			case "Username":
+				return ec.fieldContext_User_Username(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
 			case "Phone":
@@ -711,10 +716,10 @@ func (ec *executionContext) fieldContext_Todo_user(_ context.Context, field grap
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_User_id(ctx, field)
-			case "UserID":
-				return ec.fieldContext_User_UserID(ctx, field)
-			case "UserName":
-				return ec.fieldContext_User_UserName(ctx, field)
+			case "Userid":
+				return ec.fieldContext_User_Userid(ctx, field)
+			case "Username":
+				return ec.fieldContext_User_Username(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
 			case "Phone":
@@ -759,14 +764,14 @@ func (ec *executionContext) fieldContext_User_id(_ context.Context, field graphq
 	return fc, nil
 }
 
-func (ec *executionContext) _User_UserID(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_Userid(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_User_UserID,
+		ec.fieldContext_User_Userid,
 		func(ctx context.Context) (any, error) {
-			return obj.UserID, nil
+			return obj.Userid, nil
 		},
 		nil,
 		ec.marshalNString2string,
@@ -775,7 +780,7 @@ func (ec *executionContext) _User_UserID(ctx context.Context, field graphql.Coll
 	)
 }
 
-func (ec *executionContext) fieldContext_User_UserID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_Userid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -788,14 +793,14 @@ func (ec *executionContext) fieldContext_User_UserID(_ context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _User_UserName(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_Username(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_User_UserName,
+		ec.fieldContext_User_Username,
 		func(ctx context.Context) (any, error) {
-			return obj.UserName, nil
+			return obj.Username, nil
 		},
 		nil,
 		ec.marshalNString2string,
@@ -804,7 +809,7 @@ func (ec *executionContext) _User_UserName(ctx context.Context, field graphql.Co
 	)
 }
 
-func (ec *executionContext) fieldContext_User_UserName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_Username(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -882,7 +887,7 @@ func (ec *executionContext) _User_Role(ctx context.Context, field graphql.Collec
 		field,
 		ec.fieldContext_User_Role,
 		func(ctx context.Context) (any, error) {
-			return obj.Role, nil
+			return ec.Resolvers.User().Role(ctx, obj)
 		},
 		nil,
 		ec.marshalNString2string,
@@ -895,8 +900,8 @@ func (ec *executionContext) fieldContext_User_Role(_ context.Context, field grap
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -911,7 +916,7 @@ func (ec *executionContext) _User_Create_at(ctx context.Context, field graphql.C
 		field,
 		ec.fieldContext_User_Create_at,
 		func(ctx context.Context) (any, error) {
-			return obj.CreateAt, nil
+			return ec.Resolvers.User().CreateAt(ctx, obj)
 		},
 		nil,
 		ec.marshalNString2string,
@@ -924,8 +929,8 @@ func (ec *executionContext) fieldContext_User_Create_at(_ context.Context, field
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -2631,38 +2636,100 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 		case "id":
 			out.Values[i] = ec._User_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "UserID":
-			out.Values[i] = ec._User_UserID(ctx, field, obj)
+		case "Userid":
+			out.Values[i] = ec._User_Userid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "UserName":
-			out.Values[i] = ec._User_UserName(ctx, field, obj)
+		case "Username":
+			out.Values[i] = ec._User_Username(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "Email":
 			out.Values[i] = ec._User_Email(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "Phone":
 			out.Values[i] = ec._User_Phone(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "Role":
-			out.Values[i] = ec._User_Role(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_Role(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "Create_at":
-			out.Values[i] = ec._User_Create_at(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_Create_at(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

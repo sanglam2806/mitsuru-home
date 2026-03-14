@@ -3,8 +3,9 @@ package repositories
 import (
 	"context"
 	"fmt"
+
 	"github.com/rs/zerolog"
-	"github.com/sanglam2806/mitsuru-home/internal/domain/entity"
+	"github.com/sanglam2806/mitsuru-home/internal/domain/graph/model"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
@@ -19,21 +20,21 @@ func NewUserRepository (client *mongo.Client) *UserRepository {
 	}
 }
 
-func (user_repo *UserRepository) GetAllAccounts(ctx context.Context, logger *zerolog.Logger) (*entity.User, error) {
+func (user_repo *UserRepository) GetAllAccounts(ctx context.Context, logger *zerolog.Logger) (*model.User, error) {
 
 	col := user_repo.client.Database("mitsuru_base").Collection("user_account")
-	var rs []entity.User
+	var rs []model.User
 	filter := bson.D{}
 	cursor, err := col.Find(ctx,filter)
 	if err != nil {
 		logger.Err(err).Msg("Cannot get data from DB")
-		return &entity.User{}, nil
+		return &model.User{}, nil
 	}
 	err = cursor.All(ctx, &rs)
 
 	if err!= nil {
 		logger.Err(err).Msg("Cannot convert data to result")	
-		return &entity.User{}, nil
+		return &model.User{}, nil
 	}
 	
 	// return &entity.User{
@@ -48,7 +49,7 @@ func (user_repo *UserRepository) GetAllAccounts(ctx context.Context, logger *zer
 	return &rs[0],nil
 }
 
-func (user_repo *UserRepository) AddUserAccount(userAccount *entity.User, logger *zerolog.Logger, 
+func (user_repo *UserRepository) AddUserAccount(userAccount *model.User, logger *zerolog.Logger, 
 	ctx context.Context) error {
 
 	col := user_repo.client.Database("mitsuru_base").Collection("user_account");

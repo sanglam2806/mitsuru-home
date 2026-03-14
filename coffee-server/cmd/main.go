@@ -6,7 +6,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/sanglam2806/mitsuru-home/internal/domain"
-	"github.com/sanglam2806/mitsuru-home/internal/domain/entity"
+	"github.com/sanglam2806/mitsuru-home/internal/domain/graph/model"
 	"github.com/sanglam2806/mitsuru-home/internal/domain/handlers"
 	"github.com/sanglam2806/mitsuru-home/internal/domain/repositories"
 	"github.com/sanglam2806/mitsuru-home/internal/domain/services"
@@ -30,12 +30,12 @@ func main() {
 	repo := repositories.NewUserRepository(client);
 	service := services.NewUserService(repo);
 	handler := handlers.NewUserHandler(service);
-	userAccount := entity.User{
-		Userid:    "",
-		Username:  "Mitsuru",
-		Email:     "mitsuru_home@gmail.com",
-		Phone:     "0xx0xx",
-		Role:      0,
+	userAccount := model.User{
+		Userid:   "001",
+		Username: "Moena",
+		Email:    "na-chan@gmail.com",
+		Phone:    "080xxxxx",
+		Role:     model.HOST,
 		Create_at: time.Now(),
 	}
 

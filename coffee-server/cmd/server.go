@@ -1,4 +1,4 @@
-package domain
+package main
 
 import (
 	"log"
@@ -10,7 +10,11 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/sanglam2806/mitsuru-home/internal/domain"
 	"github.com/sanglam2806/mitsuru-home/internal/domain/graph"
+	"github.com/sanglam2806/mitsuru-home/internal/domain/repositories"
+	"github.com/sanglam2806/mitsuru-home/internal/domain/services"
+	"github.com/sanglam2806/mitsuru-home/internal/infa"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
@@ -22,8 +26,19 @@ func main() {
 		port = defaultPort
 	}
 
+	domain.LoadMongoConfig(); 
+	mongoConf := domain.LoadMongoConfig()
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	client, err := infa.MongoConnect(mongoConf)
+	if err != nil {
+		// log.Err(err).Msg("Cannot connect to MongoDB")
+	}
+	repo := repositories.NewUserRepository(client);
+	sv := services.NewUserService(repo);
+
+	resolver := graph.NewResolver(sv)
+
+	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: resolver,}))
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
 	srv.AddTransport(transport.POST{})

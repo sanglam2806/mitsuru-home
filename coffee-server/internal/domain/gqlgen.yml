@@ -157,3 +157,6 @@ models:
     model:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
+  User:
+    model:
+      - github.com/sanglam2806/mitsuru-home/internal/domain/graph/model.User 

@@ -10,3 +10,9 @@ import "github.com/sanglam2806/mitsuru-home/internal/domain/services"
 type Resolver struct{
 	service *services.UserService
 }
+
+func NewResolver(sv *services.UserService) *Resolver{
+	return &Resolver{
+		service: sv,
+	}
+}

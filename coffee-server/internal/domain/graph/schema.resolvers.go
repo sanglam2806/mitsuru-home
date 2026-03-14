@@ -8,8 +8,11 @@ package graph
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/sanglam2806/mitsuru-home/internal/domain/graph/model"
+	"github.com/sanglam2806/mitsuru-home/internal/logger"
 )
 
 // CreateTodo is the resolver for the createTodo field.
@@ -24,7 +27,30 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+	// panic(fmt.Errorf("not implemented: Users - users"))
+	log := logger.NewLogger(zerolog.InfoLevel)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	user, err := r.service.GetUsers(ctx, log)
+	if err != nil {
+		log.Error().Msg("internal error")
+	}
+
+	var users []*model.User
+	users = append(users, user)
+
+	return users, nil
+}
+
+// Role is the resolver for the Role field.
+func (r *userResolver) Role(ctx context.Context, obj *model.User) (string, error) {
+	panic(fmt.Errorf("not implemented: Role - Role"))
+}
+
+// CreateAt is the resolver for the Create_at field.
+func (r *userResolver) CreateAt(ctx context.Context, obj *model.User) (string, error) {
+	panic(fmt.Errorf("not implemented: CreateAt - Create_at"))
 }
 
 // Mutation returns MutationResolver implementation.
@@ -33,25 +59,9 @@ func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// User returns UserResolver implementation.
+func (r *Resolver) User() UserResolver { return &userResolver{r} }
+
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (h *queryResolver) GetUsers(ctx context.Context, logger *zerolog.Logger) (*entity.User, error){
-	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
-	defer cancel()
-
-	user, err := h.service.GetUsers(ctx, logger);
-	if err!= nil {
-		logger.Error().Msg("internal error");
-	}
-
-	return user, nil
-}
-*/
+type userResolver struct{ *Resolver }
