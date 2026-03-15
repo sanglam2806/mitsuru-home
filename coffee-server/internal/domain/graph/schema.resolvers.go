@@ -32,13 +32,15 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	user, err := r.service.GetUsers(ctx, log)
+	userList, err := r.service.GetUsers(ctx, log)
 	if err != nil {
 		log.Error().Msg("internal error")
 	}
 
 	var users []*model.User
-	users = append(users, user)
+	for _,user := range *userList {
+		users = append(users, &user)
+	}
 
 	return users, nil
 }

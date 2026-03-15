@@ -16,7 +16,7 @@ func NewUserService (user_repo *repositories.UserRepository) *UserService {
 	return &UserService{repo: user_repo}
 }
 
-func (s *UserService) GetUsers (ctx context.Context, logger *zerolog.Logger) (*model.User, error) {
+func (s *UserService) GetUsers (ctx context.Context, logger *zerolog.Logger) (*[]model.User, error) {
 	return s.repo.GetAllAccounts(ctx, logger); 
 }
 

@@ -20,7 +20,7 @@ func NewUserRepository (client *mongo.Client) *UserRepository {
 	}
 }
 
-func (user_repo *UserRepository) GetAllAccounts(ctx context.Context, logger *zerolog.Logger) (*model.User, error) {
+func (user_repo *UserRepository) GetAllAccounts(ctx context.Context, logger *zerolog.Logger) (*[]model.User, error) {
 
 	col := user_repo.client.Database("mitsuru_base").Collection("user_account")
 	var rs []model.User
@@ -28,13 +28,13 @@ func (user_repo *UserRepository) GetAllAccounts(ctx context.Context, logger *zer
 	cursor, err := col.Find(ctx,filter)
 	if err != nil {
 		logger.Err(err).Msg("Cannot get data from DB")
-		return &model.User{}, nil
+		return nil, nil
 	}
 	err = cursor.All(ctx, &rs)
 
 	if err!= nil {
 		logger.Err(err).Msg("Cannot convert data to result")	
-		return &model.User{}, nil
+		return nil, nil
 	}
 	
 	// return &entity.User{
@@ -46,7 +46,7 @@ func (user_repo *UserRepository) GetAllAccounts(ctx context.Context, logger *zer
 	// 	Create_at: time.Now(),
 	// }, nil
 
-	return &rs[0],nil
+	return &rs,nil
 }
 
 func (user_repo *UserRepository) AddUserAccount(userAccount *model.User, logger *zerolog.Logger, 

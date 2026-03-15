@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
+	"net/http"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -17,7 +19,7 @@ func NewRoomHandler (service *services.RoomService) *RoomHandler {
 	return &RoomHandler{service: service}
 }
 
-func(h *RoomHandler) GetAllRooms(logger *zerolog.Logger) {
+func(h *RoomHandler) GetAllRooms(w http.ResponseWriter, r *http.Request, logger *zerolog.Logger) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -29,6 +31,7 @@ func(h *RoomHandler) GetAllRooms(logger *zerolog.Logger) {
 	for _,room := range *rooms {
 		logger.Info().Msgf("Room : %s\n", room.RoomName)
 	}
+	json.NewEncoder(w).Encode(rooms);
 }
 
 func(h *RoomHandler) InsertNewRoom(ctx context.Context, logger *zerolog.Logger, room *model.Room) error{
