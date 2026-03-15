@@ -23,10 +23,7 @@ type MongoConfig struct {
 }
 
 func LoadMongoConfig() *MongoConfig{
-	err := godotenv.Load("./.env")
-	if err != nil{
-		log.Fatal("Error loading .env file")
-	}
+	_ = godotenv.Load()
 
 	return &MongoConfig{
 		MongoUrl : LoadEnvKey("MONGO_URI"),
@@ -38,7 +35,7 @@ func LoadEnvKey(key string) string {
 	val, exist := os.LookupEnv(key)
 
 	if !exist {
-		log.Fatal("key %s does not exist", key)
+		log.Fatalf("key %s does not exist", key)
 	}
 
 	return val
