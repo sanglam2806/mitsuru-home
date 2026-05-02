@@ -2,7 +2,7 @@ pipeline {
 	agent any
 
 		environment {
-			IMAGE_NAME = 'java-admin-service'
+			IMAGE_NAME = 'admin'
 				IMAGE_TAG = "${BUILD_NUMBER}"  // auto increments each build
 		}
 
