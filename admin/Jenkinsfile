@@ -26,28 +26,32 @@ pipeline {
 
 		stage('Docker Build') {
 			steps {
-				echo '🐳 Building Docker image...'
-					sh """
-					podman build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-					podman tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
-					"""
+				dir('admin') {
+					echo '🐳 Building Docker image...'
+						sh """
+						podman build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+						podman tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
+						"""
+				}
 			}
 		}
 
 		stage('Docker Push') {
 			steps {
-				echo '📦 Pushing to registry...'
-					withCredentials([usernamePassword(
-								credentialsId: 'java-admin-credentials',
-								usernameVariable: 'USERNAME',
-								passwordVariable: 'PASSWORD'
-								)]) {
-						sh """
-							podman login -u $USERNAME -p $PASSWORD docker.io
-							podman push ${IMAGE_NAME}:${IMAGE_TAG}
-						podman push ${IMAGE_NAME}:latest
-							"""
-					}
+				dir('admin') {
+					echo '📦 Pushing to registry...'
+						withCredentials([usernamePassword(
+									credentialsId: 'java-admin-credentials',
+									usernameVariable: 'USERNAME',
+									passwordVariable: 'PASSWORD'
+									)]) {
+							sh """
+								podman login -u $USERNAME -p $PASSWORD docker.io
+								podman push ${IMAGE_NAME}:${IMAGE_TAG}
+							podman push ${IMAGE_NAME}:latest
+								"""
+						}
+				}
 			}
 		}
 
