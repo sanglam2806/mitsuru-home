@@ -17,7 +17,7 @@ pipeline {
 
 		stage('Test') {
 			steps {
-				dir('java-order-service') {
+				dir('admin') {
 					echo '🧪 Running tests...'
 						sh './gradlew test'
 				}
@@ -26,7 +26,7 @@ pipeline {
 
 		stage('Build') {
 			steps {
-				dir('java-order-service') {
+				dir('admin') {
 					echo '🔨 Building jar...'
 						sh './gradlew bootJar -x test'
 				}
