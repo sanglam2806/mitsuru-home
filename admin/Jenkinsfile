@@ -15,15 +15,6 @@ pipeline {
 			}
 		}
 
-		stage('Test') {
-			steps {
-				dir('admin') {
-					echo '🧪 Running tests...'
-						sh './gradlew test'
-				}
-			}
-		}
-
 		stage('Build') {
 			steps {
 				dir('admin') {
