@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'go-email-service'
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo '📥 Checking out code...'
+                checkout scm
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo '🧪 Running Go tests...'
+                sh 'go test ./...'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo '🔨 Building Go binary...'
+                sh 'CGO_ENABLED=0 GOOS=linux go build -o email-service .'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                echo '🐳 Building Docker image...'
+                sh """
+                    podman build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                    podman tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
+                """
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                echo '📦 Pushing to registry...'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'USERNAME',
+                    passwordVariable: 'PASSWORD'
+                )]) {
+                    sh """
+                        podman login -u $USERNAME -p $PASSWORD docker.io
+                        podman push ${IMAGE_NAME}:${IMAGE_TAG}
+                        podman push ${IMAGE_NAME}:latest
+                    """
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo '🚀 Deploying...'
+                sh 'podman-compose up -d --build go-email-service'
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'podman image prune -f'
+        }
+    }
+}
