@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mitsuru.admin.beans.Order;
-import com.mitsuru.admin.beans.OrderMessage;
 import com.mitsuru.admin.services.OrderService;
 
 @RestController

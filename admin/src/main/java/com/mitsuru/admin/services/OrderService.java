@@ -22,16 +22,15 @@ public class OrderService {
 	public List<Order> getOrders() {
 		return orderRepository.findAll();
 	}
-
 	public Order createOrder(Order order) {
-			Order saveOrder =  orderRepository.save(order);
 
+		Order saveOrder =  orderRepository.save(order);
 		OrderMessage message = new OrderMessage();
-		message.setOrderId(order.getOrderId());
+		message.setOrderId(saveOrder.getOrderId());
 		message.setUserEmail("mitsuru@gmail.com");
 		message.setNote(order.getNote());
 		orderProducer.sendOrder(message);
-		
+
 		return saveOrder;
 	}
 }

@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@NoArgsConstructor
 @Table(name = "purchase_order")
 @Entity
 public class Order {
@@ -24,14 +24,19 @@ public class Order {
 		sequenceName = "purchase_order_seq", 
 		allocationSize = 1
 	)
+	@Getter @Setter 
 	private Long orderId;
 
+	@Getter @Setter
 	private Long userId;
 
+	@Getter @Setter
 	private Long drinkId;
 
+	@Getter @Setter
 	private BigDecimal price;
 
+	@Getter @Setter
 	private String note;
 
 	public Order(Long orderId, Long userId, Long drinkId, BigDecimal price, String note) {

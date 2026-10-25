@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@NoArgsConstructor
 public class LoginRequest {
 
+	@Getter @Setter
 	private String username;
+	@Getter @Setter
 	private String password;
 }

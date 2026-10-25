@@ -50,7 +50,6 @@ public class ServerSecurity {
 		return http.build();
 	}
 
-
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(customUserDetailService);
