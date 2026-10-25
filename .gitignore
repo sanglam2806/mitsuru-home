@@ -7,3 +7,6 @@ Mitsuru-key.pem
 mitsuru-home.pem
 .env
 go-email-service/.env
+
+# Private keys
+*.pem
