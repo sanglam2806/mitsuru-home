@@ -1,7 +1,8 @@
 package model
 
+// Order mirrors com.mitsuru.admin.beans.OrderMessage, which Jackson serializes in camelCase.
 type Order struct {
-	OrderId   int    `Json:"order_id"`
-	UserEmail string `Json:"user_email"`
-	Note      string `Json:"note"`
+	OrderId   int64  `json:"orderId"`
+	UserEmail string `json:"userEmail"`
+	Note      string `json:"note"`
 }

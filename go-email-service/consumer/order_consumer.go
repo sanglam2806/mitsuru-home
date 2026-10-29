@@ -41,11 +41,9 @@ func StartConsuming() {
 
 	for msg := range msgs {
 		var order model.Order
-		err = json.Unmarshal(msg.Body, &order)
-		FailOnError(err, "Fail to parse body!")
-
-		if err != nil {
-			log.Panic("Can not parse Queue Body")
+		if err := json.Unmarshal(msg.Body, &order); err != nil {
+			// skip the bad message instead of crashing the whole consumer
+			log.Printf("Cannot parse message body %q: %s", msg.Body, err)
 			continue
 		}
 		fmt.Printf("order reveiced: %+v\n", order)	

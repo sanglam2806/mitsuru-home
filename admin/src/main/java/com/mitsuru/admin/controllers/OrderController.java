@@ -1,36 +1,45 @@
 package com.mitsuru.admin.controllers;
 
+import java.net.URI;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mitsuru.admin.beans.Order;
+import com.mitsuru.admin.beans.CreateOrderRequest;
+import com.mitsuru.admin.beans.OrderResponse;
 import com.mitsuru.admin.services.OrderService;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
-	@Autowired
-	private OrderService orderService;
+	private final OrderService orderService;
 
-	@GetMapping("/mitsuru")
-	public ResponseEntity<String> helloWorld(){
-		return ResponseEntity.ok("Hello Na-chan from with love");
-	} 
-
-	@GetMapping("/create")
-	public ResponseEntity<Order> createOrder(@RequestBody Order order) {
-		return ResponseEntity.ok(orderService.createOrder(order));
+	@GetMapping
+	public List<OrderResponse> getAll() {
+		return orderService.getOrders();
 	}
 
-	@GetMapping("/listall")
-	public ResponseEntity<List<Order>> getAll() {
-		return ResponseEntity.ok(orderService.getOrders());
+	@GetMapping("/{orderId}")
+	public OrderResponse getOne(@PathVariable Long orderId) {
+		return orderService.getOrder(orderId);
+	}
+
+	@PostMapping
+	public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request,
+			Authentication authentication) {
+		OrderResponse created = orderService.createOrder(request, authentication.getName());
+		return ResponseEntity.created(URI.create("/orders/" + created.orderId())).body(created);
 	}
 }

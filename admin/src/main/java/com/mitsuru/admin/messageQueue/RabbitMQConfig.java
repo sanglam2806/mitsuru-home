@@ -1,6 +1,5 @@
 package com.mitsuru.admin.messageQueue;
 
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -42,9 +41,11 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	public AmqpTemplate amqpTemplate(ConnectionFactory connectionFactory){
+	public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory){
 		RabbitTemplate template = new RabbitTemplate(connectionFactory);
 		template.setMessageConverter(messageConverter());
+		// return unroutable messages to the producer instead of silently dropping them
+		template.setMandatory(true);
 		return template;
 	}
 	

@@ -1,14 +1,9 @@
-package  com.mitsuru.admin.beans;
+package com.mitsuru.admin.beans;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
 
-@NoArgsConstructor
-public class LoginRequest {
-
-	@Getter @Setter
-	private String username;
-	@Getter @Setter
-	private String password;
+public record LoginRequest(
+	@NotBlank String username,
+	@NotBlank String password
+) {
 }
