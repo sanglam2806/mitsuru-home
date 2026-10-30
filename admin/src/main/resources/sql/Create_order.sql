@@ -1,5 +1,5 @@
 -- Reference DDL for PostgreSQL; must match com.mitsuru.admin.beans.Order.
-CREATE SEQUENCE IF NOT EXISTS purchase_order_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS purchase_order_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE IF NOT EXISTS purchase_order (
 	order_id   BIGINT PRIMARY KEY,

@@ -28,6 +28,18 @@ func StartConsuming() {
 	FailOnError(err, "Fail to connect to Channel")
 	defer ch.Close()
 
+	// Declare the queue, startup order doesn't matter: the Java service only declares it
+	// on its first publish. Settings must match RabbitMQConfig.queue() or RabbitMQ rejects the declare.
+	_, err = ch.QueueDeclare(
+		queue,
+		true,  // durable
+		false, // auto-delete
+		false, // exclusive
+		false, // no-wait
+		nil,   // args
+	)
+	FailOnError(err, "Cannot declare queue")
+
 	msgs, err := ch.Consume(
 		queue,  // queue name - must match Java config
 		"",             // consumer tag

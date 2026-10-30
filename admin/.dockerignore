@@ -1,0 +1,7 @@
+# send only what the build stage needs; local build output and IDE files stay out
+*
+!gradlew
+!gradle/
+!build.gradle
+!settings.gradle
+!src/

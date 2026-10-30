@@ -39,6 +39,11 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
+// only the executable boot jar is needed; the plain jar would make the Dockerfile's COPY ambiguous
+tasks.named('jar') {
+	enabled = false
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }

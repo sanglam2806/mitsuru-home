@@ -23,11 +23,11 @@ public class Order {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "po_seq")
-	// allocationSize must match the sequence's INCREMENT BY (50 is what Hibernate created originally)
+	// allocationSize must match the existing sequence's INCREMENT BY (1), or Hibernate refuses to start
 	@SequenceGenerator(
 		name = "po_seq",
 		sequenceName = "purchase_order_seq",
-		allocationSize = 50
+		allocationSize = 1
 	)
 	private Long orderId;
 

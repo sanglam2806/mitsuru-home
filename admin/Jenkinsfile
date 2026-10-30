@@ -15,11 +15,12 @@ pipeline {
 			}
 		}
 
-		stage('Build') {
+		stage('Test') {
 			steps {
 				dir('admin') {
-					echo '🔨 Building jar...'
-						sh './gradlew bootJar -x test'
+					echo '🧪 Running tests...'
+						// the jar itself is built inside the Docker image (multi-stage Dockerfile)
+						sh './gradlew test'
 				}
 			}
 		}
