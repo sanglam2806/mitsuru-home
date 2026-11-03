@@ -18,16 +18,19 @@ import com.mitsuru.admin.services.OrderService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
+@Slf4j 
 public class OrderController {
 
 	private final OrderService orderService;
 
 	@GetMapping
 	public List<OrderResponse> getAll() {
+		log.info("handling on {}",Thread.currentThread());	
 		return orderService.getOrders();
 	}
 
