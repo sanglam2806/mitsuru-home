@@ -6,7 +6,7 @@ import (
 	"github.com/sanglam2806/go-email-service/consumer"
 )
 
-func main () {
+func main() {
 	fmt.Println("Hello Na-chan from with love")
-	consumer.StartConsuming();
+	consumer.StartConsuming()
 }
