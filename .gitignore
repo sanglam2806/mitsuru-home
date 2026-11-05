@@ -11,3 +11,5 @@ go-email-service/.env
 
 # Private keys
 *.pem
+/home-server/
+/mitsuru-server/
