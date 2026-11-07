@@ -18,3 +18,5 @@ go-email-service/.env
 # Python cache
 __pycache__/
 *.pyc
+
+.DS_Store
