@@ -1,7 +1,41 @@
 # mitsuru-home
 
-A small polyglot backend playground: a Java admin service that takes orders, a Go worker that
-emails customers about them, and a MongoDB seeding script.
+A management system for a small **homestay with a coffee shop** in the same place. Guests can book
+a room, and the admin manages rooms, bookings and the café. The café is just a normal coffee shop:
+it takes drink orders and the guest gets an email about each one.
+
+I'm building this project to learn new technologies, so it's a personal playground rather than a
+production system. Some parts are deliberately split into separate services and languages just to
+practice how they work together.
+
+## What I'm learning
+
+| Area | Technologies |
+|---|---|
+| Backend with Java | Java 25, Spring Boot 4, Spring Security + JWT, JPA / PostgreSQL, virtual threads |
+| Backend with Go | Go services, MongoDB, GraphQL (gqlgen) |
+| Messaging | RabbitMQ: durable queues, publisher confirms, a retry queue with TTL, a dead-letter queue (DLQ), reconnecting consumers |
+| DevOps | Docker (multi-stage, layered images), Docker Compose, Jenkins CI |
+| Tooling | Python scripts for generating fake test data |
+
+## Features
+
+**Coffee shop** (works now)
+- [x] Admin login with JWT
+- [x] Create and view drink orders
+- [x] Order emails sent asynchronously through RabbitMQ, with retries and a DLQ
+
+**Homestay** (planned)
+- [ ] Room management for the admin (rooms, prices, max guests, amenities, status)
+- [ ] Guest accounts
+- [ ] Guests book a room; the admin confirms or cancels bookings
+- [ ] Booking confirmation emails through the same queue
+
+**Café** (planned)
+- [ ] Drink menu management
+- [ ] Guests staying at the homestay can order from the café
+
+## How an order flows
 
 ```
            POST /orders                 order.exchange ──► order.queue
