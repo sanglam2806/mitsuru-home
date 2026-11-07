@@ -13,3 +13,8 @@ go-email-service/.env
 *.pem
 /home-server/
 /mitsuru-server/
+/coffee-server/
+
+# Python cache
+__pycache__/
+*.pyc
